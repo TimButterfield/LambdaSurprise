@@ -1,0 +1,11 @@
+publish-to-sns.js
+
+node_modules
+
+obj
+bin
+
+.idea
+
+.DS_Store
+/**/*.zip

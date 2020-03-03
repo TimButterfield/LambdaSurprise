@@ -1,0 +1,15 @@
+{
+  "name": "lambdasurprise",
+  "version": "1.0.0",
+  "description": "a service to demonstrate what happens with background threads in an AWS lambda",
+  "main": "",
+  "dependencies": {
+    "aws-sdk": "^2.632.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "publishmessage": "node publish-to-sns.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

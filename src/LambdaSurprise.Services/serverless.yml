@@ -1,0 +1,18 @@
+service: LambdaSurprise
+
+provider:
+  name: aws
+  runtime: dotnetcore2.1
+
+package:
+  individually: true
+
+functions:
+  UnacknowledgedOrderCaller:
+    handler: LambdaSurprise.Services::LambdaSurprise.Services.Functions.OrderUnacknowledgedHandler::HandleAsync
+
+    package:
+      artifact: ./LambdaSurprise.Services.zip
+    
+    events:
+      - sns: orderunacknowledged

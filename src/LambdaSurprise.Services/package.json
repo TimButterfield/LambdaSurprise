@@ -1,0 +1,11 @@
+{
+  "name": "lambdasurprise",
+  "version": "1.0.0",
+  "description": "a project to help demo the issue with lambdas and background threads",
+  "scripts": {
+    "deploy": "serverless deploy --region eu-west-1",
+    "package": "dotnet lambda package --configuration release --framework netcoreapp2.1 --output-package ./LambdaSurprise.Services.zip",
+    "publish": "dotnet publish -c Release /p:GenerateRuntimeConfigurationFiles=true",
+    "build": "dotnet build ../../LambdaSurprise.sln -c Release"
+  }
+}
