@@ -119,7 +119,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/LambdaSurprise/dev/1583267508424-2020-03-03T20:31:48.424Z/LambdaSurprise.Services.zip"
+                "S3Key": "serverless/LambdaSurprise/dev/1583310541823-2020-03-04T08:29:01.823Z/LambdaSurprise.Services.zip"
               },
               "FunctionName": "LambdaSurprise-dev-UnacknowledgedOrderCaller",
               "Handler": "LambdaSurprise.Services::LambdaSurprise.Services.Functions.OrderUnacknowledgedHandler::HandleAsync",
@@ -138,14 +138,51 @@
               "IamRoleLambdaExecution"
             ]
           },
-          "UnacknowledgedOrderCallerLambdaVersionxiFAzDmggHtglHV8Cei1TwCCElUU5B3Pc3YgPvAKro": {
+          "UnacknowledgedOrderCallerLambdaVersionY7a5MFVKzsoC59gifQpxM0SrNramROhJcm2aqkp9I": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "UnacknowledgedOrderCallerLambdaFunction"
               },
-              "CodeSha256": "2//mHukzsfyHmwP6KGBhD6alt/hPg3Kim4Ddmq9yn1w="
+              "CodeSha256": "eEZXJJrDoR3bPIuZTO1DJQ47pJ82smFgNnU2UW8MlCU="
+            }
+          },
+          "UnacknowledgedOrderCallerEventsRuleSchedule1": {
+            "Type": "AWS::Events::Rule",
+            "Properties": {
+              "ScheduleExpression": "rate(61 minutes)",
+              "State": "ENABLED",
+              "Targets": [
+                {
+                  "Arn": {
+                    "Fn::GetAtt": [
+                      "UnacknowledgedOrderCallerLambdaFunction",
+                      "Arn"
+                    ]
+                  },
+                  "Id": "UnacknowledgedOrderCallerSchedule"
+                }
+              ]
+            }
+          },
+          "UnacknowledgedOrderCallerLambdaPermissionEventsRuleSchedule1": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "UnacknowledgedOrderCallerLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "events.amazonaws.com",
+              "SourceArn": {
+                "Fn::GetAtt": [
+                  "UnacknowledgedOrderCallerEventsRuleSchedule1",
+                  "Arn"
+                ]
+              }
             }
           },
           "SNSTopicOrderunacknowledged": {
@@ -210,7 +247,7 @@
           "UnacknowledgedOrderCallerLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "UnacknowledgedOrderCallerLambdaVersionxiFAzDmggHtglHV8Cei1TwCCElUU5B3Pc3YgPvAKro"
+              "Ref": "UnacknowledgedOrderCallerLambdaVersionY7a5MFVKzsoC59gifQpxM0SrNramROhJcm2aqkp9I"
             }
           }
         }
@@ -254,6 +291,9 @@
         "events": [
           {
             "sns": "orderunacknowledged"
+          },
+          {
+            "schedule": "rate(61 minutes)"
           }
         ],
         "name": "LambdaSurprise-dev-UnacknowledgedOrderCaller",
@@ -268,7 +308,7 @@
   },
   "package": {
     "individually": true,
-    "artifactDirectoryName": "serverless/LambdaSurprise/dev/1583267508424-2020-03-03T20:31:48.424Z",
+    "artifactDirectoryName": "serverless/LambdaSurprise/dev/1583310541823-2020-03-04T08:29:01.823Z",
     "artifact": ""
   }
 }

@@ -1,26 +1,28 @@
 using System;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
-using LambdaSurprise.Services.Functions;
+using Microsoft.Extensions.Logging;
 
 namespace LambdaSurprise.Services.OptimizelySdk
 {
-    public class HttpClientEventDispatcher
+    public class HttpClientEventDispatcher : IHttpClientEventDispatcher
     {
-        public ILogger Logger { get; set; } = new DefaultLogger();
-        
+        private readonly ILogger<HttpClientEventDispatcher> _logger;
         /// <summary>
         /// HTTP client object.
         /// </summary>
-        private static readonly HttpClient Client;
+        //private static readonly HttpClient Client;
 
         /// <summary>
         /// Constructor for initializing static members.
         /// </summary>
-        static HttpClientEventDispatcher()
+        public HttpClientEventDispatcher(ILogger<HttpClientEventDispatcher> logger)
         {
-            Client = new HttpClient();
+            _logger = logger;
+            //Client = new HttpClient();
         }
+     
 
         public void DispatchEvent(LogEvent logEvent)
         {
@@ -29,6 +31,7 @@ namespace LambdaSurprise.Services.OptimizelySdk
     
         private async void DispatchEventAsync(LogEvent logEvent)
         {
+            _logger.LogInformation("Logging event activity");
             try
             {
                 var json = logEvent.GetParamsAsJson();
@@ -44,14 +47,19 @@ namespace LambdaSurprise.Services.OptimizelySdk
                     if (header.Key.ToLower() != "content-type")
                         request.Content.Headers.Add(header.Key, header.Value);
 
-                
-                //var result = await Client.SendAsync(request);
-                //result.EnsureSuccessStatusCode();
+                //Note the real code makes a HTTP request to an api to record an event
+                Thread.Sleep(500);
+                _logger.LogInformation("Finished logging event activity");
             }
             catch (Exception ex)
             {
-                Logger.Log(LogLevel.ERROR, string.Format("Error Dispatching Event: {0}", ex.GetAllMessages()));
+                _logger.LogInformation($"Error Dispatching Event: {ex.GetAllMessages()}");
             }
         }
+    }
+
+    public interface IHttpClientEventDispatcher
+    {
+        void DispatchEvent(LogEvent logEvent);
     }
 }

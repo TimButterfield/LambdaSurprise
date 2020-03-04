@@ -16,3 +16,4 @@ functions:
     
     events:
       - sns: orderunacknowledged
+      - schedule: rate(61 minutes) 

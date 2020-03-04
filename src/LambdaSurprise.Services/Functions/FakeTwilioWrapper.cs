@@ -1,13 +1,14 @@
+using System.Threading;
 using System.Threading.Tasks;
-using LambdaSurprise.Services.OptimizelySdk;
+using Microsoft.Extensions.Logging;
 
 namespace LambdaSurprise.Services.Functions
 {
     public class FakeTwilioWrapper : ITwilioWrapper
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<FakeTwilioWrapper> _logger;
 
-        public FakeTwilioWrapper(ILogger logger)
+        public FakeTwilioWrapper(ILogger<FakeTwilioWrapper> logger)
         {
             _logger = logger;
         }
@@ -15,6 +16,12 @@ namespace LambdaSurprise.Services.Functions
         public async Task CallAsync(string telephoneNumber)
         {
             //NoOp : 
+            _logger.LogInformation("Queuing call to customer");
+            
+            Thread.Sleep(300);
+            
+            _logger.LogInformation("Call successfully queued to customer");
+            
             await Task.CompletedTask;
         }
     }

@@ -1,10 +1,21 @@
 using System.Collections.Generic;
 using System.Net;
+using Amazon.Lambda.Core;
+using Microsoft.Extensions.Logging;
 
 namespace LambdaSurprise.Services.OptimizelySdk
 {
     public class OptimizelyWrapper : IOptimizelyWrapper
     {
+        private readonly IHttpClientEventDispatcher _httpClientEventDispatcher;
+        private readonly ILogger<OptimizelyWrapper> _logger;
+
+        public OptimizelyWrapper(IHttpClientEventDispatcher httpClientEventDispatcher, ILogger<OptimizelyWrapper> logger)
+        {
+            _httpClientEventDispatcher = httpClientEventDispatcher;
+            _logger = logger;
+        }
+        
         /// <summary>
         /// Imagine this is a call to Optimizely to determine if the expiriment is active
         /// And to determine if the customer is in the experimental group to be called or not
@@ -22,8 +33,7 @@ namespace LambdaSurprise.Services.OptimizelySdk
         private void SendImpressionEvent()
         {
             //Imagine if you will, that this call takes a couple of seconds
-            var client = new HttpClientEventDispatcher();
-            client.DispatchEvent(CreateLogEvent());
+            _httpClientEventDispatcher.DispatchEvent(CreateLogEvent());
         }
 
         private LogEvent CreateLogEvent()

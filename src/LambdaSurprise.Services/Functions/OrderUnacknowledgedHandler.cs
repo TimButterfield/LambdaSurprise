@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.SNSEvents;
@@ -7,14 +10,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using ILogger = LambdaSurprise.Services.OptimizelySdk.ILogger;
 
 namespace LambdaSurprise.Services.Functions
 {
     public class OrderUnacknowledgedHandler
     {
         private const string ExperimentKey = "OrderAssistanceExperiment";
-        private readonly ILogger _logger;
+        private readonly ILogger<OrderUnacknowledgedHandler> _logger;
         private readonly ITwilioWrapper _twilioWrapper;
         private IOptimizelyWrapper _optimizelyWrapper;
 
@@ -25,26 +27,41 @@ namespace LambdaSurprise.Services.Functions
         public OrderUnacknowledgedHandler()
         {
             var serviceProvider = Bootstrap();
-            _logger = serviceProvider.GetService<ILogger>();
+            _logger = serviceProvider.GetService<ILogger<OrderUnacknowledgedHandler>>();
+            _logger.LogInformation("Initialising lambda"); 
+            
             _optimizelyWrapper = serviceProvider.GetService<IOptimizelyWrapper>();
             _twilioWrapper = serviceProvider.GetService<ITwilioWrapper>();
-
         }
         
         public async Task<bool> HandleAsync(SNSEvent @event, ILambdaContext lambdaContext)
         {
-            lambdaContext.Logger.Log("Beginning execution");
-            var sns = @event.Records[0].Sns; 
-            var message = JsonConvert.DeserializeObject<OrderUnacknowledged>(sns.Message); 
-            var theCustomerNeedsToBeCalled = DoesTheCustomerNeedToBeCalled(message);
- 
-            if (theCustomerNeedsToBeCalled)
+            using (_logger.BeginScope($"{lambdaContext.AwsRequestId}"))
             {
-                await CallTheCustomer(message.CustomerTelephoneNumber); 
+                _logger.LogInformation("Beginning execution");
+                var message = ParseMessage(@event); 
+                
+                var theCustomerNeedsToBeCalled = DoesTheCustomerNeedToBeCalled(message);
+     
+                if (theCustomerNeedsToBeCalled)
+                {
+                    await CallTheCustomer(message.CustomerTelephoneNumber); 
+                }
+
+                _logger.LogInformation("Execution complete");
+            }
+            return await Task.FromResult(true);
+        }
+
+        private static OrderUnacknowledged ParseMessage(SNSEvent @event)
+        {
+            if (@event != null && @event.Records.Any())
+            {
+                var sns = @event.Records[0].Sns;
+                return JsonConvert.DeserializeObject<OrderUnacknowledged>(sns.Message);
             }
 
-            lambdaContext.Logger.Log("Execution complete");
-            return await Task.FromResult(true);
+            return new OrderUnacknowledged {CustomerTelephoneNumber = "237462745", OrderId = Guid.NewGuid()};
         }
 
         private async Task CallTheCustomer(string customerTelephoneNumber)
@@ -63,7 +80,12 @@ namespace LambdaSurprise.Services.Functions
 
         private bool IsTheCustomerInTheControlGroup(OrderUnacknowledged message)
         {
+            _logger.LogInformation("Retrieving experiment variant");
+            
             var variant = _optimizelyWrapper.GetExperimentVariant(ExperimentKey, message.OrderId);
+            
+            _logger.LogInformation($"Variant {variant} returned for {message.OrderId}");
+            
             return variant == Variants.DoNotCall;
         }
         
@@ -71,24 +93,34 @@ namespace LambdaSurprise.Services.Functions
         {
             //Perform some checks on the order, and subject to state, then customer needs to act
             //Defaulted to true for purpose of demonstrating threading problem
+            
+            //in an effort to simulate external api call I've put in a thread sleep
+            _logger.LogInformation("Started order state check");
+            
+            Thread.Sleep(500);
+            
+            _logger.LogInformation("Completed order state check. Order state is unacknowledged");
             return true;
         }
 
         private ServiceProvider Bootstrap()
         {
             var builder = new ConfigurationBuilder();
+            
             var configuration = builder.Build();
+            
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddScoped((provider) => configuration);
+            
             serviceCollection.AddLogging(SetupLogger);
-            serviceCollection.AddScoped<ILogger, DefaultLogger>(); 
             serviceCollection.AddScoped<ITwilioWrapper, FakeTwilioWrapper>();
-            serviceCollection.AddScoped<IOptimizelyWrapper, OptimizelyWrapper>(); 
+            serviceCollection.AddScoped<IOptimizelyWrapper, OptimizelyWrapper>();
+            serviceCollection.AddScoped<IHttpClientEventDispatcher, HttpClientEventDispatcher>(); 
             
             return serviceCollection.BuildServiceProvider();
         }
 
-        private void SetupLogger(ILoggingBuilder logging)
+        private void SetupLogger(ILoggingBuilder loggingBuilder)
         {
             var loggerOptions = new LambdaLoggerOptions
             {
@@ -96,11 +128,13 @@ namespace LambdaSurprise.Services.Functions
                 IncludeLogLevel = true,
                 IncludeNewline = true,
                 IncludeEventId = true,
-                IncludeException = true
+                IncludeException = true,
+                IncludeScopes = true
             };
-
+            
             // Configure Lambda logging
-            logging.AddLambdaLogger(loggerOptions);
+            loggingBuilder.AddLambdaLogger(loggerOptions);
+            
         }
     }
 }
