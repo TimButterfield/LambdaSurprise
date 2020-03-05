@@ -6,4 +6,4 @@ This repository was created as part of a [blog post](https://blog.timbutterfield
 
 #### TLDR
 
-Background threads shouldn't be used in AWS lambdas, since **_the background thread will be frozen once a Lambda event is processed and may not ever be unfrozen if more Lambda events are not received for some time._**
+Background threads shouldn't be used in AWS lambdas, since "**_the background thread will be frozen once a Lambda event is processed and may not ever be unfrozen if more Lambda events are not received for some time._**"
