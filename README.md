@@ -11,7 +11,7 @@ Background threads shouldn't be used in AWS lambdas, since "**_the background th
 The above quote was taken from the [aws logging dotnet project](https://github.com/aws/aws-logging-dotnet)
 
 
-![See blog post for what happens when you use background tasks](https://github.com/TimButterfield/lambdasurprise/AWSLambdaLogs-Threading.png)
+![See blog post for what happens when you use background tasks](https://github.com/TimButterfield/lambdasurprise/blob/master/AWSLambdaLogs-Threading.png)
 
 #### Give it a try
 If you have any desire to pull down the code, launch and then execute an AWS Lambda to see what happens, follow these steps. 
