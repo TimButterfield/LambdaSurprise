@@ -33,7 +33,7 @@ If you have any desire to pull down the code, launch and then execute an AWS Lam
 There are a multitude of reasons why deploying a Lambda to AWS can fail.
 If it turns out to be a policy/permissions issue, [this](https://blog.timbutterfield.co.uk/2020/02/11/serverless-deploy-developer-policy/) may help
 
-####### Triggering the Lambda
+###### Triggering the Lambda
 
 There are two Lambda triggers. Firstly there's an [sns trigger](https://github.com/TimButterfield/LambdaSurprise/blob/master/src/LambdaSurprise.Services/serverless.yml#L18) and secondly a [cron trigger](https://github.com/TimButterfield/LambdaSurprise/blob/master/src/LambdaSurprise.Services/serverless.yml#L19). Be sure that you disable the [scheduled trigger](https://docs.aws.amazon.com/eventbridge/latest/userguide/run-lambda-schedule.html) in the AWS console once you've managed to replicate the scenario.
 
