@@ -13,7 +13,7 @@ The above quote was taken from the [aws logging dotnet project](https://github.c
 
 ![See blog post for what happens when you use background tasks](https://github.com/TimButterfield/lambdasurprise/blob/master/AWSLambdaLogs-Threading.png)
 
-Fig 1.0 An extract from cloud watch logs showing how log statements from one Lambda execution appear with the log statements from a subsequent execution. Caused by background threads being frozen as described above.
+Fig 1.0 An extract from cloud watch logs showing how log statements from one Lambda execution appear with the log statements from a subsequent execution. Caused by background threads being frozen, as described above.
 
 #### Give it a try
 If you have any desire to pull down the code, launch and then execute an AWS Lambda to see what happens, follow these steps. 
