@@ -2,7 +2,7 @@
 
 What happens when you have use a background thread in an AWS lambda? 
 
-This repository was created as part of a [blog post](https://blog.timbutterfield.co.uk/2020/02/11/serverless-deploy-developer-policy/) about using a third party SDK without giving consideration to whether the package in question was fit for my execution model. Hours of confusion ensued as a conseqeunce of not giving thought to that question, wanting to iterate quickly and considering the code from the SDK I was about to use.
+This repository was created as part of a [blog post](https://blog.timbutterfield.co.uk/2020/02/11/serverless-deploy-developer-policy/) about using Open Source Software without giving consideration to whether it is fit for the execution model. In my case, hours of confusion ensued as a consequence of wanting to iterate quickly, not reading the SDK source code and not giving thought to whether the SDK was right for use in an AWS Lambda. 
 
 #### TLDR
 
@@ -31,7 +31,7 @@ If you have any desire to pull down the code, launch and then execute an AWS Lam
 There are a multitude of reasons why deploying a Lambda to AWS can fail.
 If it turns out to be a policy/permissions issue, [this](https://blog.timbutterfield.co.uk/2020/02/11/serverless-deploy-developer-policy/) may help
 
-####### Triggering the lambda
+####### Triggering the Lambda
 
 There are two Lambda triggers. Firstly there's an [sns trigger](https://github.com/TimButterfield/LambdaSurprise/blob/master/src/LambdaSurprise.Services/serverless.yml#L18) and secondly a [cron trigger](https://github.com/TimButterfield/LambdaSurprise/blob/master/src/LambdaSurprise.Services/serverless.yml#L19). Be sure that you disable the [scheduled trigger](https://docs.aws.amazon.com/eventbridge/latest/userguide/run-lambda-schedule.html) in the AWS console once you've managed to replicate the scenario.
 
