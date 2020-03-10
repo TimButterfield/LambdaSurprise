@@ -15,7 +15,7 @@ The above quote was taken from the [aws logging dotnet project](https://github.c
 
 Fig 1.0 An extract from cloud watch logs showing how log statements from one Lambda execution appear with the log statements from a subsequent execution. Caused by background threads being frozen, as described above.
 
-In my case, the problem was caused by this [one line of code](https://github.com/optimizely/csharp-sdk/blob/master/OptimizelySDK/Event/Dispatcher/HttpClientEventDispatcher45.cs#L78). 
+In my case, the real world problem that occurred in a production system was caused by this [one line of code](https://github.com/optimizely/csharp-sdk/blob/master/OptimizelySDK/Event/Dispatcher/HttpClientEventDispatcher45.cs#L78). Thankfully, the implications were not significant, but they could be subject to the system you're building.  
 
 #### Give it a try
 If you have any desire to pull down the code, launch and then execute an AWS Lambda to see what happens, follow these steps. 
