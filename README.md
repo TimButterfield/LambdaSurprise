@@ -15,6 +15,8 @@ The above quote was taken from the [aws logging dotnet project](https://github.c
 
 Fig 1.0 An extract from cloud watch logs showing how log statements from one Lambda execution appear with the log statements from a subsequent execution. Caused by background threads being frozen, as described above.
 
+In my case, the problem was caused by this [one line of code](https://github.com/optimizely/csharp-sdk/blob/master/OptimizelySDK/Event/Dispatcher/HttpClientEventDispatcher45.cs#L78). 
+
 #### Give it a try
 If you have any desire to pull down the code, launch and then execute an AWS Lambda to see what happens, follow these steps. 
 
@@ -37,6 +39,6 @@ If you do experience problems, which turn out to be a policy/permissions issue, 
 
 There are two Lambda triggers. Firstly there's an [sns trigger](https://github.com/TimButterfield/LambdaSurprise/blob/master/src/LambdaSurprise.Services/serverless.yml#L18) and secondly a [cron trigger](https://github.com/TimButterfield/LambdaSurprise/blob/master/src/LambdaSurprise.Services/serverless.yml#L19). Be sure that you disable the [scheduled trigger](https://docs.aws.amazon.com/eventbridge/latest/userguide/run-lambda-schedule.html) in the AWS console once you've managed to replicate the scenario.
 
-I'd recommend that you trigger the Lambda 10-20 times by running the publish-to-sns.js node script repeatedly, and then leave it for a while (I think I left it > 30 minutes before re-triggering). 
+I'd recommend that you trigger the Lambda 10-20 times by running the publish-to-sns.js node script repeatedly, and then leave it for a while (I think I left it > 30 minutes before re-triggering). After a period > 30 minutes, repeat the re-triggering of the Lambda. Hopefully you'll see evidence from the CloudWatch logs of the above. 
 
 BEFORE running the script though, you'll need to edit the script, replacing the "**_REGIONHERE_**" placeholder and the "**_ACCOUNTNUMBERHERE_**" placeholder as per your account and region details.
