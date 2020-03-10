@@ -30,7 +30,8 @@ If you have any desire to pull down the code, launch and then execute an AWS Lam
 7) Run **_npm run package_** from {project_root}/src/LambdaSurprise.Services directory
 
 ###### To deploy to AWS: 
-1) Run **_npm run deploy_** from {project_root}/src/LambdaSurprise.Services directory. 
+1) Install the [AWS sdk for javascript](https://www.npmjs.com/package/aws-sdk)
+2) Run **_npm run deploy_** from {project_root}/src/LambdaSurprise.Services directory. 
 
 There are a multitude of reasons why deploying a Lambda to AWS can fail.
 If you do experience problems, which turn out to be a policy/permissions issue, [this](https://blog.timbutterfield.co.uk/2020/02/11/serverless-deploy-developer-policy/) may help
