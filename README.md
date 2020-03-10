@@ -13,7 +13,7 @@ The above quote was taken from the [aws logging dotnet project](https://github.c
 
 ![See blog post for what happens when you use background tasks](https://github.com/TimButterfield/lambdasurprise/blob/master/AWSLambdaLogs-Threading.png)
 
-Fig 1.0 An extract from cloud watch logs showing how log statements from one Lambda execution appear with the log statements from a subsequent execution. Caused by background threads being frozen, as described above.
+Fig 1.0 _An extract from cloud watch logs showing how log statements from one Lambda execution appear with the log statements from a subsequent execution. Caused by background threads being frozen, as described above_.
 
 In my case, the real world problem that occurred in a production system was caused by this [one line of code](https://github.com/optimizely/csharp-sdk/blob/master/OptimizelySDK/Event/Dispatcher/HttpClientEventDispatcher45.cs#L78). Thankfully, the implications were not significant, but they could be subject to the system you're building.  
 
