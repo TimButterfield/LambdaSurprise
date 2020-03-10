@@ -1,6 +1,6 @@
 # LambdaSurprise
 
-What happens when you have use a background thread in an AWS lambda? 
+What happens when you use a background thread in an AWS lambda? 
 
 This repository was created as part of a [blog post](https://blog.timbutterfield.co.uk/2020/02/11/serverless-deploy-developer-policy/) about using Open Source Software without giving consideration to whether it is fit for the execution model. In my case, hours of confusion ensued as a consequence of wanting to iterate quickly, not reading the SDK source code and not giving thought to whether the SDK was right for use in an AWS Lambda. 
 
